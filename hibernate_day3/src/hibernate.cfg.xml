@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+		<session-factory>
+ 
+ 			<!-- 五必须 -->
+			<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+			<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/hibernate_day03?useSSL=true&amp;useUnicode=true&amp;characterEncoding=UTF-8</property>
+			<property name="hibernate.connection.username">root</property>
+			<property name="hibernate.connection.password">root</property>
+			<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		 
+			<!-- 三可选 -->
+			<property name="hibernate.show_sql">true</property>
+			<property name="hibernate.format_sql">true</property>
+			<property name="hibernate.hbm2ddl.auto">create</property>	
+			
+			<!-- 设置事务隔离级别,默认也是4 -->
+			<property name="hibernate.connection.isolation">4</property>			
+			<!-- 设置当前线程绑定的Session ,会创建一个session绑定到当前线程-->
+			<property name="hibernate.current_session_context_class">thread</property>
+					
+			<!-- 引入映射文件 -->
+			<mapping resource="domain/Customer.hbm.xml"/>
+			<mapping resource="domain/LinkMan.hbm.xml"/>
+			<mapping resource="domain/User.hbm.xml"/>
+			<mapping resource="domain/Role.hbm.xml"/>
+ 
+		</session-factory>
+	</hibernate-configuration>
+ 
+ 
+ 

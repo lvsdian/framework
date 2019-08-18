@@ -1,0 +1,63 @@
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.OrderMapper">
+
+ <!-- 一对一关联，resultType的使用 -->
+ <select id="getOrderUser" resultType="pojo.OrderUser">
+ 	SELECT
+	  o.`id`,
+	  o.`user_id`,
+	  o.`number`,
+	  o.`createtime`,
+	  o.`note`,
+	  u.username,
+	  u.address
+	FROM
+	 mybatis.`order` o
+	LEFT JOIN mybatis.`user` u
+	ON u.`id` = o.`user_id`;
+ </select>
+ 
+ <!-- 一对一关联，resultMap的使用 -->
+ <resultMap type="order" id="order_user_map">
+	 <!-- id用于映射主键 -->
+	 <id property="id" column="id"/>
+	  <!-- 普通字段用<result>映射 -->
+	  <result property="userId" column="user_id" />
+	  <result property="number" column="number" />
+	  <result property="createtime" column="createtime" />
+	  <result property="note" column="note" />
+	  
+	  <!-- 
+	  	asscoiation用于配置一对一关系 
+	  	property:Order里面的User属性
+	  	javaType:user的数据类型
+	  	-->
+	  <association property="user" javaType="pojo.User">
+	  	<id property="id" column="user_id"/>
+	  	<result property="username" column="username"/>
+	  	<result property="address" column="address"/>
+	  	<result property="sex" column="sex"/>
+	  	<result property="birthday" column="birthday"/>
+	  </association>
+ </resultMap>
+ <select id="getOrderUserMap" resultMap="order_user_map">
+ 	SELECT
+	  o.`id`,
+	  o.`user_id`,
+	  o.`number`,
+	  o.`createtime`,
+	  o.`note`,
+	  u.username,
+	  u.address,
+	  u.sex,
+	  u.birthday
+	FROM
+	 mybatis.`order` o
+	LEFT JOIN mybatis.`user` u
+	ON u.`id` = o.`user_id`;
+ </select>
+ 
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+    <hibernate-mapping>
+    	<!-- 建立类与表的映射，类名与表名一样，可以省略table,catalog对应数据库名，可以不配 -->
+    	<class name="hibernate_demo01.Customer" table="cst_customer" catalog="hibernate_day01">
+    		
+    		<!-- 建立类中的属性与表中的主键的对应，name是类中属性名，column是表中字段名 -->
+    		<id name="cust_id" column="cust_id">
+    			<generator class="native"/>
+    		</id>
+    		
+    		<!-- 建立类中的属性与表中的字段的对应，
+    			name是类中属性名，column是表中字段名 
+    			type是类型，比如字符串类型可以写:type="java.lang.String",
+    			或hibernate中类型：type="string",
+    			或数据库中的类型：去掉column,在property中写一个conlumn子标签，
+    			里面写name="",sql-type="varchar"
+    			-->
+    		<property name="cust_name" column="cust_name" length="32" />
+			<property name="cust_source" column="cust_source" length="32"/>
+			<property name="cust_industry" column="cust_industry"/>
+			<property name="cust_level" column="cust_level"/>
+			<property name="cust_phone" column="cust_phone"/>
+			<property name="cust_mobile" column="cust_mobile"/>
+    	</class>
+    </hibernate-mapping>

@@ -1,0 +1,196 @@
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+	动态代理开发规则：
+		1.namespace必须是接口的全路径名
+		2.接口的方法名必须与sql的id一致
+		3.接口的入参必须与parameterType类型一致
+		4.接口的返回值必须与resultType类型一致
+ -->
+<mapper namespace="mapper.UserMapper">
+	
+	<!-- sql片段的抽取 -->
+	<sql id="user_sql">
+		 `id`,
+		  `username`,
+		  `birthday`,
+		  `sex`,
+		  `address`
+	</sql>
+	
+	<!-- 
+		id：sql的id,语句的唯一标识 
+		parameterType:入参的数据类型
+		resultType:返回结果的数据类型
+	-->
+	<select id="getUserById" parameterType="int" resultType="pojo.User">
+		SELECT
+		
+		<!-- sql片段的使用 -->
+		<include refid="user_sql"/>
+		 <!--  
+			  `id`,
+			  `username`,
+			  `birthday`,
+			  `sex`,
+			  `address` 
+		  -->
+	
+		FROM
+		  `mybatis`.`user`
+		where id = #{id}
+	</select>
+	
+	<select id="getUserByUsername" parameterType="string" resultType="pojo.User">
+		SELECT
+		  `id`,
+		  `username`,
+		  `birthday`,
+		  `sex`,
+		  `address`
+		FROM
+		  `mybatis`.`user`
+		  <!-- 对应MybatisTest中sql语句不同 -->
+		<!-- where username like #{name} -->
+		where username like '%${value}%'
+	</select>
+	
+	<!-- 
+		这里useGeneratedKeys="true" keyProperty="id"配套使用相当于下面selectKey中内容
+		使MabytisTest中插入的数据得到id
+	 -->
+	<insert id="insertUser" parameterType="pojo.User" useGeneratedKeys="true" keyProperty="id">
+		<!-- 主键返回
+			selectKey:主键返回
+			resultType:主键数据类型
+			order:指定selectKey何时执行
+		 -->
+		<!-- 
+			<selectKey keyProperty="id" resultType="int" order="AFTER" >
+				select last_insert_id()
+			</selectKey> 
+		-->
+		insert into `mybatis`.`user` (
+		  `username`,
+		  `birthday`,
+		  `sex`,
+		  `address`
+		)
+		values
+		  (
+		    #{username},
+		    #{birthday},
+		    #{sex},
+		    #{address}
+		  );
+	
+	</insert>	
+	
+	<select id="getUserByQueryVo" parameterType="pojo.QueryVo" resultType="pojo.User">
+		SELECT
+		  `id`,
+		  `username`,
+		  `birthday`,
+		  `sex`,
+		  `address`
+		FROM
+		  `mybatis`.`user`
+		  <!-- 对应MybatisTest中sql语句不同 -->
+		<!-- where username like #{name} -->
+		where username like '%${user.username}%'
+	</select>
+	
+	<select id="getUserByPojo" parameterType="pojo.User" resultType="pojo.User">
+		SELECT
+		  `id`,
+		  `username`,
+		  `birthday`,
+		  `sex`,
+		  `address`
+		FROM
+		  `mybatis`.`user`
+	<!--if标签 
+		where 1= 1
+			<if test="username != null and username != ''">
+				and username like '%${username}%'
+			</if>
+			<if test="sex != null and sex != ''">
+				and sex = #{sex}
+			</if>		 
+	-->
+	
+	<!-- where标签自动补上where关键字，同时处理多余的and,用了where标签就不能再手动加上where关键字
+		<where>
+			<if test="username != null and username != ''">
+				and username like '%${username}%'
+			</if>
+			<if test="sex != null and sex != ''">
+				and sex = #{sex}
+			</if>		 
+		</where> 
+	-->
+	</select>
+	
+	<select id="getUserByIds" parameterType="pojo.QueryVo" resultType="pojo.User">
+		select 
+			<include refid="user_sql"/>
+		from 
+			`mybatis`.`user`
+		<where>
+				<!-- 
+					foreach循环标签：
+							collection:要遍历的集合
+							open:循环开始之前输出的内容
+							item:循环变量
+							separator:分隔符
+							close:循环结束后输出的内容
+				 -->
+				 <foreach collection="ids" open="id in (" item="uId" separator="," close=")">
+				 	#{uId}
+				 </foreach>
+		</where>
+	</select>
+	
+	<!-- 一对多关系，resultMap -->
+	<resultMap type="pojo.User" id="user_order_map">
+		<id property="id" column="id"/>
+	  	<result property="username" column="username"/>
+	  	<result property="address" column="address"/>
+	  	<result property="sex" column="sex"/>
+	  	<result property="birthday" column="birthday"/>
+	  	<!-- 
+	  		collection配置一对多
+	  		prorty:User中的orders属性
+	  		ofType:由于orders是多的一方，那么ofType对应orders的元素的类型
+	  	 -->
+	  	<collection property="orders" ofType="pojo.Order">
+	  		 <!-- id用于映射主键 -->
+			 <id property="id" column="oid"/>
+			  <!-- 普通字段用<result>映射 -->
+			  <result property="userId" column="id" />
+			  <result property="number" column="number" />
+			  <result property="createtime" column="createtime" />
+			  <result property="note" column="note" />
+	  	</collection>
+	</resultMap>
+	<select id="getUserOrderMap" resultMap="user_order_map">
+			SELECT
+				u.`id`,
+				u.`uuid2`,
+				u.`username`,
+				u.`address`,
+				u.`sex`,
+				u.`birthday`,
+				o.`id` oid,
+				o.`user_id`,
+				o.`number`,
+				o.`createtime`,
+				o.`note`
+			FROM
+				mybatis.`user` u
+			LEFT JOIN mybatis.`order` o
+			ON u.`id` = o.`user_id`;
+	</select>
+</mapper>

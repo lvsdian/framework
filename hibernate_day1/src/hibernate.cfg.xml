@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+		<session-factory>
+ 
+ 			<!-- 五必须 -->
+			<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+			<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/hibernate_day01?useSSL=true&amp;useUnicode=true&amp;characterEncoding=UTF-8</property>
+			<property name="hibernate.connection.username">root</property>
+			<property name="hibernate.connection.password">root</property>
+			<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		 
+			<!-- 三可选 -->
+			<property name="hibernate.show_sql">true</property>
+			<property name="hibernate.format_sql">true</property>
+			<!-- 自动建表
+				none:不使用hibernate的自动建表
+				create:如果已经有表，删除原有表，重新创建，如果没有，就创建一个
+				create-drop:如果已经有表，删除原有表，重新创建，如果没有，就创建一个，用完后在删除
+				update:如果有表，使用原有表，如果没有，创建表
+				validate:如果没有表，不会创建表，会验证折据库中原有表(验证映射和表结构)
+			 -->
+			<property name="hibernate.hbm2ddl.auto"></property>			
+			
+			<!-- 引入映射文件 -->
+			<mapping resource="hibernate_demo01/Customer.hbm.xml"/>
+ 
+		</session-factory>
+	</hibernate-configuration>
+ 
+ 
+ 

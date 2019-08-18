@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+		
+	<!-- 配置连接池和jdbc模板 -->
+	<!-- 通过context标签引入属性文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties"/>
+	<!-- 配置c3p0连接池 -->
+	<bean id="DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<!-- 借用引入的属性文件 -->
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbc.url}"></property>
+		<property name="user" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property> 
+	</bean>
+	
+	<!-- 配置service和dao -->
+	<bean id="AccountDao" class="txDemo2_声明式_annotation.AccountDaoImpl">
+		<property name="dataSource" ref="DataSource"></property>
+	</bean>
+	<bean id="AccountService" class="txDemo2_声明式_annotation.AccountServiceImpl">
+		<property name="accountDao" ref="AccountDao"></property>
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="TransactonManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="DataSource"></property>
+	</bean>
+	
+	<!-- 开启注解事务 -->
+	<tx:annotation-driven transaction-manager="TransactonManager"/>
+	
+</beans>

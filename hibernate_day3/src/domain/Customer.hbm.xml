@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<!-- 类与表的映射 -->
+	<class name="domain.Customer" table="cst_customer" >
+		<!-- id与主键映射 -->
+		<id name="cust_id" column="cust_id">
+			<!-- 主键生成策略 -->
+			<generator class="native"></generator>
+		</id>
+		
+		<property name="cust_name" column="cust_name"  />
+		<property name="cust_source" column="cust_source" />
+		<property name="cust_industry" column="cust_industry"/>
+		<property name="cust_level" column="cust_level"/>
+		<property name="cust_phone" column="cust_phone"/>
+		<property name="cust_mobile" column="cust_mobile"/>
+		
+		<!-- cascade:配置级联
+				inverse:放弃外键维护权，false表示不放弃 -->
+		<!-- 配置一对多的关系 -->	
+		<!-- 
+	   		set标签：
+				name:多的一方的对象的集合的属性名称
+		 -->
+		 <!-- cascade="save-update,delete" inverse="true" -->
+		<set name="linkMans" inverse="true">
+			<!-- 
+				key标签
+					column:多的一方的外键名称
+			 -->
+			<key column="lkm_cust_id"></key>
+			<!-- 
+				one-to-many标签
+					class:多的一方的全路径
+			 -->
+			<one-to-many class="domain.LinkMan"/>
+		</set>
+	</class>
+</hibernate-mapping>

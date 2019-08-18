@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+    <hibernate-mapping>
+    	<class name="domain.User" table="sys_user">
+    		<id name="user_id" column="user_id">
+    			<generator class="native"></generator>
+    		</id> 
+    		<property name="user_code"></property>
+    		<property name="user_name"></property>
+    		<property name="user_password"></property>
+    		<property name="user_state"></property>
+    	
+	    	<!-- 建立用户与角色多对多的关系 -->
+    		<!-- 
+    			set标签
+    				name:对方的集合的属性名称
+    				table:多对多的关系需要使用中间表，放的是中间表的名称
+ 		   	 -->
+    		<set name="roles" table="sys_user_role" cascade="save-update,delete">
+    			<!-- 
+    				key标签：
+    					column:当前对象所对应的外键名称
+    			 -->
+    			<key column="user_id"></key>
+    			<!-- 
+    				many-to-many标签
+    				class:对方的类的全路径
+    				column:对方的对象在中间表中的外键名称
+    			 -->
+    			<many-to-many class="domain.Role" column="role_id"></many-to-many>
+    		</set>
+    	</class>
+    </hibernate-mapping>

@@ -1,0 +1,75 @@
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+	动态代理开发规则：
+		1.namespace必须是接口的全路径名
+		2.接口的方法名必须与sql的id一致
+		3.接口的入参必须与parameterType类型一致
+		4.接口的返回值必须与resultType类型一致
+ -->
+<mapper namespace="mapper.UserMapper">
+	
+	<!-- 
+		id：sql的id,语句的唯一标识 
+		parameterType:入参的数据类型
+		resultType:返回结果的数据类型
+	-->
+	<select id="getUserById" parameterType="int" resultType="pojo.User">
+		SELECT
+		  `id`,
+		  `username`,
+		  `birthday`,
+		  `sex`,
+		  `address`
+		FROM
+		  `mybatis`.`user`
+		where id = #{id}
+	</select>
+	
+	<select id="getUserByUsername" parameterType="string" resultType="pojo.User">
+		SELECT
+		  `id`,
+		  `username`,
+		  `birthday`,
+		  `sex`,
+		  `address`
+		FROM
+		  `mybatis`.`user`
+		  <!-- 对应MybatisTest中sql语句不同 -->
+		<!-- where username like #{name} -->
+		where username like '%${value}%'
+	</select>
+	
+	<!-- 
+		这里useGeneratedKeys="true" keyProperty="id"配套使用相当于下面selectKey中内容
+		使MabytisTest中插入的数据得到id
+	 -->
+	<insert id="insertUser" parameterType="pojo.User" useGeneratedKeys="true" keyProperty="id">
+		<!-- 主键返回
+			selectKey:主键返回
+			resultType:主键数据类型
+			order:指定selectKey何时执行
+		 -->
+		<!-- 
+			<selectKey keyProperty="id" resultType="int" order="AFTER" >
+				select last_insert_id()
+			</selectKey> 
+		-->
+		insert into `mybatis`.`user` (
+		  `username`,
+		  `birthday`,
+		  `sex`,
+		  `address`
+		)
+		values
+		  (
+		    #{username},
+		    #{birthday},
+		    #{sex},
+		    #{address}
+		  );
+	
+	</insert>	
+</mapper>

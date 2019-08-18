@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="jdbc.properties">
+		<!-- 先加载内部标签内容，再加载外部文件，所以即使这里配置的name错误，使用的还是外部的配置文件 -->
+		<property name="jdbc.username" value="root1111"/>
+	</properties>
+	
+	<!-- 别名 -->
+	<typeAliases>
+		<!-- 单个别名定义，别名使用不区分大小写，这里配user，也可以用UsEr -->
+		<!-- <typeAlias type="pojo.User" alias="user"/> -->
+		
+		<!-- 别名包扫描器：别名是类的全称，不区分大小写 ，推荐方式(不用一个个去配)-->
+		<package name="pojo"/>
+	</typeAliases>
+	
+	<!-- 和spring整合后 environments配置将废除 -->
+	<environments default="development">
+		<environment id="development">
+			<!-- 使用jdbc事务管理 -->
+			<transactionManager type="JDBC" />
+			<!-- 数据库连接池 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driverClass}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<mappers>
+		<!-- 加载映射文件 -->
+		<!-- <mapper resource="mybatis/user.xml"/> -->
+		<!-- <mapper resource="mybatis/UserMapper.xml"/>(采用下面的方式加载) -->
+		
+		<!-- 
+			映射文件：
+				class扫描器：
+					1.接口文件必须与映射文件同一目录下
+					2.接口文件名称必须与映射文件名称相同
+		 -->
+		<!-- <mapper class="mapper.UserMapper"/> -->
+		<!-- 
+			映射文件 ：
+				package扫描器(推荐)：
+					1.接口文件必须与映射文件同一目录下
+					2.接口文件名称必须与映射文件名称相同
+		-->
+		<package name="mapper"/>
+	</mappers>
+	
+</configuration>
+			
